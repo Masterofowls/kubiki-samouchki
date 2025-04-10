@@ -1,0 +1,88 @@
+---
+import Card from './Card.astro';
+
+interface Feature {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  features: Feature[];
+  variant?: 'default' | 'gradient';
+}
+
+const { 
+  title, 
+  subtitle, 
+  features,
+  variant = 'default'
+} = Astro.props;
+
+const sectionClass = variant === 'gradient' 
+  ? 'bg-gradient-to-br from-blue-900 to-purple-900 text-white' 
+  : 'bg-gray-50';
+---
+
+<section class={`py-20 ${sectionClass}`}>
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold mb-4 animate-on-scroll">
+        {title}
+      </h2>
+      {subtitle && (
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto animate-on-scroll">
+          {subtitle}
+        </p>
+      )}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {features.map((feature, index) => (
+        <div class="animate-on-scroll" style={`animation-delay: ${index * 150}ms`}>
+          <Card
+            title={feature.title}
+            description={feature.description}
+            icon={feature.icon}
+            variant={variant === 'gradient' ? 'hover' : 'default'}
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.animate-on-scroll').forEach(element => {
+    observer.observe(element);
+  });
+</script>

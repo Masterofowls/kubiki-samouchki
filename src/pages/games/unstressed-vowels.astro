@@ -1,0 +1,123 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import UnstressedVowelsGame from '../../components/UnstressedVowelsGame.astro';
+
+const examples = [
+  { word: 'вода', check: 'воды', rule: 'Проверочное слово: воды (во́ды)' },
+  { word: 'трава', check: 'травы', rule: 'Проверочное слово: травы (тра́вы)' },
+  { word: 'лесной', check: 'лес', rule: 'Проверочное слово: лес (ле́с)' }
+];
+
+const tips = [
+  'Чтобы проверить безударную гласную, нужно изменить слово так, чтобы на эту гласную падало ударение',
+  'Подбирайте однокоренные слова или меняйте форму слова',
+  'Некоторые слова нужно запомнить, так как их нельзя проверить (словарные слова)'
+];
+
+const gameWords = [
+  // Уровень 1 - простые слова
+  { id: '1', word: 'вода', checkWord: 'воды', hint: 'Измените число слова', level: 1 },
+  { id: '2', word: 'гора', checkWord: 'горы', hint: 'Измените число слова', level: 1 },
+  { id: '3', word: 'река', checkWord: 'реки', hint: 'Измените число слова', level: 1 },
+  { id: '4', word: 'трава', checkWord: 'травы', hint: 'Измените число слова', level: 1 },
+  { id: '5', word: 'весна', checkWord: 'вёсны', hint: 'Измените число слова', level: 1 },
+  
+  // Уровень 2 - слова посложнее
+  { id: '6', word: 'лесной', checkWord: 'лес', hint: 'Найдите корень слова', level: 2 },
+  { id: '7', word: 'морской', checkWord: 'море', hint: 'От какого слова образовано?', level: 2 },
+  { id: '8', word: 'полёты', checkWord: 'полёт', hint: 'Измените число слова', level: 2 },
+  { id: '9', word: 'дождевой', checkWord: 'дождь', hint: 'Найдите корень слова', level: 2 },
+  { id: '10', word: 'цветочный', checkWord: 'цвет', hint: 'От какого слова образовано?', level: 2 },
+
+  // Уровень 3 - сложные слова
+  { id: '11', word: 'просветление', checkWord: 'светлый', hint: 'Подберите однокоренное слово', level: 3 },
+  { id: '12', word: 'заснеженный', checkWord: 'снег', hint: 'Найдите корень слова', level: 3 },
+  { id: '13', word: 'похолодание', checkWord: 'холод', hint: 'Найдите корень слова', level: 3 },
+  { id: '14', word: 'озеленение', checkWord: 'зелень', hint: 'Подберите однокоренное слово', level: 3 },
+  { id: '15', word: 'увлажнение', checkWord: 'влага', hint: 'От какого слова образовано?', level: 3 }
+];
+---
+
+<Layout title="Безударная гласная в корне">
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-20">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center">Безударная гласная в корне</h1>
+        
+        <div class="bg-white rounded-xl shadow-xl p-8 mb-12">
+          <h2 class="text-2xl font-semibold mb-6">Примеры проверки</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {examples.map(example => (
+              <div class="bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg p-6">
+                <div class="text-2xl font-bold mb-2">{example.word}</div>
+                <div class="text-gray-600 mb-2">{example.check}</div>
+                <div class="text-sm text-gray-500">{example.rule}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div class="bg-white rounded-xl shadow-xl p-8">
+            <h2 class="text-2xl font-semibold mb-6">Как играть</h2>
+            <ol class="space-y-4 list-decimal list-inside text-gray-600">
+              <li>Возьмите карточку со словом</li>
+              <li>Определите безударную гласную в корне</li>
+              <li>Подберите проверочное слово</li>
+              <li>Проверьте себя с помощью карточки-ответа</li>
+              <li>Составьте предложение с этим словом</li>
+            </ol>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-xl p-8">
+            <h2 class="text-2xl font-semibold mb-6">Полезные советы</h2>
+            <ul class="space-y-4">
+              {tips.map(tip => (
+                <li class="flex items-start">
+                  <svg class="h-6 w-6 text-green-500 mr-3 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span class="text-gray-600">{tip}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-xl p-8 mb-12">
+          <div class="flex items-start">
+            <div class="text-4xl mr-4">💡</div>
+            <div>
+              <h3 class="text-xl font-semibold mb-2">Важно помнить!</h3>
+              <p class="text-gray-600">
+                Безударную гласную можно проверить только ударением. Если слово нельзя проверить,
+                его написание нужно запомнить (например: собака, корова, молоко).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <UnstressedVowelsGame
+          title="Игра: Проверь свои знания"
+          description="Подберите проверочные слова для каждого случая"
+          words={gameWords}
+        />
+
+        <div class="flex justify-between items-center mt-12">
+          <a href="/games" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-100 text-slate-700 rounded-full hover:bg-slate-200 transition-colors">
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Вернуться к играм
+          </a>
+          <a href="/games/cases" class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors">
+            Следующая игра
+            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

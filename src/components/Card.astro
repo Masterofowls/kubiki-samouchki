@@ -1,0 +1,159 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  icon?: string;
+  image?: string;
+  href?: string;
+  variant?: 'default' | 'hover' | 'gradient' | 'glass' | '3d';
+  size?: 'sm' | 'md' | 'lg';
+  interactive?: boolean;
+}
+
+const { 
+  title, 
+  description, 
+  icon, 
+  image,
+  href, 
+  variant = 'default',
+  size = 'md',
+  interactive = true
+} = Astro.props;
+
+const variants = {
+  default: 'bg-white/90 backdrop-blur-md hover:shadow-xl hover:bg-white/95',
+  hover: 'bg-gradient-to-br from-indigo-50 to-amber-50 hover:from-indigo-100 hover:to-amber-100',
+  gradient: 'bg-gradient-to-br from-indigo-600 to-amber-600 text-white hover:from-indigo-700 hover:to-amber-700',
+  glass: 'bg-white/80 backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/95 hover:shadow-xl hover:border-white/40',
+  '3d': 'bg-white/95 backdrop-blur-md shadow-lg hover:shadow-2xl hover:bg-white'
+};
+
+const sizes = {
+  sm: 'p-4',
+  md: 'p-6',
+  lg: 'p-8'
+};
+
+const cardClass = `
+  card
+  card-shine
+  ${variants[variant]}
+  ${sizes[size]}
+  ${interactive ? 'transform hover:-translate-y-2 hover:scale-[1.02]' : ''}
+  transition-all
+  duration-500
+  rounded-2xl
+  border border-white/30
+  relative
+  overflow-hidden
+  group
+  ${href ? 'cursor-pointer' : ''}
+`;
+---
+
+<div 
+  class={cardClass} 
+  onclick={href ? `window.location.href='${href}'` : undefined}
+  data-tilt={variant === '3d' ? '' : undefined}
+  data-tilt-max="5"
+  data-tilt-scale="1.02"
+>
+  {image && (
+    <div class="relative w-full aspect-video mb-4 rounded-lg overflow-hidden">
+      <img 
+        src={image} 
+        alt={title}
+        class="w-full h-full object-cover transform transition-transform duration-700 hover:scale-110"
+      />
+    </div>
+  )}
+  {icon && (
+    <div class={`text-4xl mb-4 ${variant === 'gradient' ? 'text-white' : 'bg-gradient-to-r from-indigo-600 to-amber-600 text-transparent bg-clip-text group-hover:scale-110 transition-transform duration-500'}`}>
+      {icon}
+    </div>
+  )}
+  <h3 class={`text-xl font-bold mb-3 ${variant === 'gradient' ? 'text-white' : 'text-gray-800 group-hover:text-indigo-700 transition-colors duration-300'}`}>
+    {title}
+  </h3>
+  <p class={`${variant === 'gradient' ? 'text-white/90' : 'text-gray-600 group-hover:text-gray-900'} line-clamp-3 transition-colors duration-300`}>
+    {description}
+  </p>
+  {href && (
+    <div 
+      class={`
+        mt-4 flex items-center
+        ${variant === 'gradient' ? 'text-white/90' : 'text-blue-600'}
+        group gap-2
+      `}
+    >
+      <span class="font-medium">Подробнее</span>
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" 
+        fill="none" 
+        viewBox="0 0 24 24" 
+        stroke="currentColor"
+      >
+        <path 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M17 8l4 4m0 0l-4 4m4-4H3"
+        />
+      </svg>
+    </div>
+  )}
+
+  <!-- Decorative elements -->
+  {variant === 'gradient' && (
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 mix-blend-overlay"></div>
+  )}
+  <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
+</div>
+
+<script>
+  // Import Vanilla Tilt library for 3D effect
+  if (document.querySelector('[data-tilt]')) {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js';
+    document.head.appendChild(script);
+
+    script.onload = () => {
+      // @ts-ignore
+      VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
+        max: 5,
+        speed: 400,
+        scale: 1.02,
+        glare: true,
+        'max-glare': 0.2
+      });
+    };
+  }
+</script>
+
+<style>
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .card {
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .card:hover {
+    box-shadow: 
+      0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Line clamp for description */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

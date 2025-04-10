@@ -1,11 +1,156 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Hero from '../components/Hero.astro';
+import FeatureSection from '../components/FeatureSection.astro';
+import Card from '../components/Card.astro';
+import Button from '../components/Button.astro';
+import TelegramWidget from '../components/TelegramWidget.astro';
+import IconButton from '../components/IconButton.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Главная">
+  <Hero
+    title="Кубики-Самоучки"
+    subtitle="Инновационная логопедическая игра для развития речи и обучения чтению. Разработана профессиональным логопедом для эффективных и увлекательных занятий с детьми."
+    image="/images/hero-bg.jpg"
+    showTelegram={true}
+  >
+
+    <IconButton
+      href="/rules"
+      variant="ghost"
+      size="lg"
+      icon="🎯"
+      label="Начать занятия"
+      class="group"
+    />
+
+  </Hero>
+
+  <section class="py-24 relative overflow-hidden">
+    <div class="w-full px-4 relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-accent-600 text-transparent bg-clip-text">
+          Преимущества методики
+        </h2>
+        <p class="text-xl text-gray-600">
+          Инновационный подход к изучению русского языка через игру
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Card
+          title="Игровой формат"
+          description="Увлекательные игры помогают детям легко усваивать правила русского языка"
+          icon="🎲"
+          variant="glass"
+          interactive={true}
+        />
+
+        <Card
+          title="Групповые занятия"
+          description="Возможность играть индивидуально или в группе до 4 человек"
+          icon="👥"
+          variant="glass"
+          interactive={true}
+        />
+
+        <Card
+          title="Комплексный подход"
+          description="Тренировка различных языковых навыков в одном наборе"
+          icon="📚"
+          variant="glass"
+          interactive={true}
+        />
+      </div>
+
+      <!-- Decorative Elements -->
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow"></div>
+      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow" style="animation-delay: 1s;"></div>
+    </div>
+  </section>
+
+  <section class="py-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-50/50 via-white to-accent-50/50 opacity-70"></div>
+    <div class="absolute inset-0" style="background-image: url('/patterns/mesh.svg'); background-repeat: repeat; opacity: 0.05;"></div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-accent-600 text-transparent bg-clip-text">
+          Наши игры
+        </h2>
+        <p class="text-xl text-gray-600">
+          Увлекательные игры для развития речи и языковых навыков
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Card
+          title="Найди свою часть речи"
+          description="Игра для изучения частей речи и членов предложения"
+          icon="🎲"
+          variant="glass"
+          href="/games/parts-of-speech"
+          interactive={true}
+        />
+
+        <Card
+          title="Собери падежи"
+          description="Тренировка падежей и склонений существительных"
+          icon="🎯"
+          variant="glass"
+          href="/games/cases"
+          interactive={true}
+        />
+
+        <Card
+          title="Безударная гласная в корне"
+          description="Отработка правил правописания безударных гласных"
+          icon="🧩"
+          variant="glass"
+          href="/games/unstressed-vowels"
+          interactive={true}
+        />
+      </div>
+
+      <!-- Decorative Elements -->
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow"></div>
+      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow" style="animation-delay: 1s;"></div>
+    </div>
+  </section>
+
+  <!-- Telegram Banner -->
+  <div class="fixed bottom-6 right-6 z-40">
+    <a
+      href="https://t.me/kubiki_samouchki"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex items-center gap-3 bg-gradient-to-r from-[#179CDE] to-[#0088CC] text-white px-4 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 group"
+    >
+      <div class="flex-shrink-0">
+        <img
+          src="https://unavatar.io/telegram/kubiki_samouchki"
+          alt="Kubiki Samouchki Telegram"
+          class="w-10 h-10 rounded-full border-2 border-white/50 group-hover:border-white transition-colors duration-300"
+          width="40"
+          height="40"
+        />
+      </div>
+      <div>
+        <div class="font-bold">@kubiki_samouchki</div>
+        <div class="text-sm text-white/90">Подписаться на канал</div>
+      </div>
+      <svg class="w-5 h-5 text-white/90 group-hover:text-white transition-colors duration-300" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.015-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.48.33-.913.49-1.302.48-.428-.009-1.252-.241-1.865-.44-.756-.244-1.358-.374-1.307-.789.027-.216.324-.437.892-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.477-1.635.398-.006.922.155 1.059.452.089.189.132.394.13.615l.001.005z"/>
+      </svg>
+    </a>
+  </div>
+
+      <!-- Decorative Elements -->
+      <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-[#179CDE]/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow"></div>
+      <div class="absolute -top-24 -left-24 w-96 h-96 bg-[#0088CC]/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow" style="animation-delay: 1s;"></div>
+    </div>
+  </section>
+
+
 </Layout>

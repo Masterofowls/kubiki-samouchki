@@ -1,0 +1,69 @@
+---
+interface Props {
+  icon: string;
+  label: string;
+  href?: string;
+  variant?: 'primary' | 'accent' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  target?: '_blank' | '_self';
+  class?: string;
+}
+
+const {
+  icon,
+  label,
+  href,
+  variant = 'primary',
+  size = 'md',
+  target = '_self',
+  class: className = '',
+} = Astro.props;
+
+const variants = {
+  primary: 'bg-primary-500 hover:bg-primary-600 text-white shadow-glow',
+  accent: 'bg-accent-500 hover:bg-accent-600 text-white shadow-glow-accent',
+  ghost: 'bg-white/10 hover:bg-white/20 text-gray-700 hover:text-gray-900 backdrop-blur-sm',
+};
+
+const sizes = {
+  sm: 'p-2 text-sm',
+  md: 'p-3 text-base',
+  lg: 'p-4 text-lg',
+};
+
+const baseClass = `
+  inline-flex items-center justify-center
+  rounded-full
+  transition-all duration-300
+  transform hover:scale-105 active:scale-95
+  ${variants[variant]}
+  ${sizes[size]}
+  ${className}
+`;
+
+const Tag = href ? 'a' : 'button';
+const props = href ? { href, target } : { type: 'button' };
+---
+
+<Tag class={baseClass} {...props} aria-label={label}>
+  <span class="relative inline-flex">
+    <Fragment set:html={icon} />
+    <span class="sr-only">{label}</span>
+    
+    <!-- Ripple effect -->
+    <span class="absolute inset-0 rounded-full animate-ping-slow opacity-20 bg-current pointer-events-none"></span>
+  </span>
+</Tag>
+
+<style>
+  @keyframes ping-slow {
+    75%, 100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+  
+  .animate-ping-slow {
+    animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+</style>

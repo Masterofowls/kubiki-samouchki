@@ -1,0 +1,181 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+
+const benefits = [
+  {
+    title: 'Игровой подход',
+    description: 'Обучение через игру делает процесс увлекательным и эффективным',
+    icon: '🎮'
+  },
+  {
+    title: 'Научная база',
+    description: 'Методика основана на современных педагогических исследованиях',
+    icon: '🔬'
+  },
+  {
+    title: 'Индивидуальный темп',
+    description: 'Каждый ребенок может заниматься в удобном для него темпе',
+    icon: '⏱️'
+  },
+  {
+    title: 'Комплексное развитие',
+    description: 'Одновременное развитие речи, памяти и мышления',
+    icon: '🧠'
+  }
+];
+
+const stages = [
+  {
+    number: 1,
+    title: 'Знакомство с правилами',
+    description: 'Изучение основных правил и принципов игры'
+  },
+  {
+    number: 2,
+    title: 'Практика',
+    description: 'Выполнение упражнений и заданий с кубиками'
+  },
+  {
+    number: 3,
+    title: 'Закрепление',
+    description: 'Повторение и закрепление пройденного материала'
+  },
+  {
+    number: 4,
+    title: 'Творческое применение',
+    description: 'Создание собственных примеров и заданий'
+  }
+];
+---
+
+<Layout title="Методика">
+  <div class="min-h-screen">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-blue-900 to-purple-900 text-white py-20 relative overflow-hidden">
+      <div class="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10"></div>
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-3xl mx-auto text-center">
+          <h1 class="text-4xl md:text-5xl font-bold mb-6">Наша методика</h1>
+          <p class="text-xl text-blue-100">
+            Инновационный подход к изучению русского языка, разработанный профессиональным педагогом
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-20">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Преимущества методики</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {benefits.map(benefit => (
+            <Card
+              title={benefit.title}
+              description={benefit.description}
+              icon={benefit.icon}
+              variant="hover"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Stages Section -->
+    <section class="py-20 bg-gradient-to-br from-blue-50 to-purple-50">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Этапы обучения</h2>
+        <div class="max-w-4xl mx-auto">
+          <div class="relative">
+            <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-blue-500 to-purple-500"></div>
+            {stages.map((stage, index) => (
+              <div class={`relative z-10 flex items-center gap-8 mb-12 ${index % 2 === 0 ? '' : 'flex-row-reverse'}`}>
+                <div class="w-1/2 flex justify-center">
+                  <div class="bg-white rounded-full w-16 h-16 flex items-center justify-center text-3xl font-bold text-blue-600 shadow-xl">
+                    {stage.number}
+                  </div>
+                </div>
+                <div class="w-1/2">
+                  <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-semibold mb-2">{stage.title}</h3>
+                    <p class="text-gray-600">{stage.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Research Section -->
+    <section class="py-20">
+      <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 class="text-3xl font-bold mb-6">Научный подход</h2>
+              <p class="text-gray-600 mb-6">
+                Наша методика основана на исследованиях в области детской психологии
+                и педагогики. Мы постоянно совершенствуем наши материалы, учитывая современные
+                тенденции в образовании.
+              </p>
+              <ul class="space-y-4">
+                <li class="flex items-center">
+                  <svg class="h-6 w-6 text-green-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Регулярные исследования эффективности
+                </li>
+                <li class="flex items-center">
+                  <svg class="h-6 w-6 text-green-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </li>
+                <li class="flex items-center">
+                  <svg class="h-6 w-6 text-green-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Постоянное обновление материалов
+                </li>
+              </ul>
+            </div>
+            <div class="relative">
+              <img
+                src="/images/research.jpg"
+                alt="Научные исследования"
+                class="rounded-lg shadow-2xl"
+              />
+              <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-xl">
+                <div class="text-4xl font-bold text-blue-600"></div>
+                <div class="text-gray-600"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gradient-to-br from-blue-900 to-purple-900 text-white relative overflow-hidden">
+      <div class="absolute inset-0 bg-[url('/images/pattern.svg')] opacity-10"></div>
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-3xl font-bold mb-6">Готовы начать?</h2>
+          <p class="text-xl mb-8 text-blue-100">
+            Присоединяйтесь ко многим родителям, которые уже оценили эффективность нашей методики
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button variant="gradient" size="lg" href="/contacts">
+              Связаться с нами
+            </Button>
+            <Button variant="outline" size="lg" href="/rules">
+              Узнать правила
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>

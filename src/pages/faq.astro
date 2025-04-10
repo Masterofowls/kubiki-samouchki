@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+
+const faqs = [
+  {
+    question: 'Для какого возраста подходят игры?',
+    answer: 'Наши игры разработаны для детей школьного возраста (7-12 лет), но могут быть адаптированы для детей от 5 лет при участии родителей.'
+  },
+  {
+    question: 'Как часто нужно заниматься?',
+    answer: 'Рекомендуется заниматься 2-3 раза в неделю по 20-30 минут. Важно соблюдать регулярность занятий для достижения лучших результатов.'
+  },
+  {
+    question: 'Нужно ли присутствие родителей во время игры?',
+    answer: 'Для младших детей (5-7 лет) присутствие родителей желательно. Дети старшего возраста могут заниматься самостоятельно.'
+  },
+  {
+    question: 'Как отслеживать прогресс ребенка?',
+    answer: 'В каждой игре есть система достижений и статистика успехов. Вы можете следить за прогрессом в личном кабинете.'
+  },
+  {
+    question: 'Можно ли заниматься с нескольких устройств?',
+    answer: 'Да, наши игры доступны на любых устройствах с браузером. Прогресс синхронизируется между всеми устройствами.'
+  }
+];
+---
+
+<Layout title="Часто задаваемые вопросы - Кубики-Самоучки">
+  <section class="min-h-screen py-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-50/50 via-white to-accent-50/50 opacity-70"></div>
+    <div class="absolute inset-0" style="background-image: url('/patterns/mesh.svg'); background-repeat: repeat; opacity: 0.05;"></div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-accent-600 text-transparent bg-clip-text">
+          Часто задаваемые вопросы
+        </h1>
+        <p class="text-xl text-gray-600">
+          Ответы на самые популярные вопросы о методике и играх
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto space-y-6">
+        {faqs.map((faq, index) => (
+          <Card
+            variant="glass"
+            interactive={true}
+          >
+            <div class="space-y-4">
+              <h3 class="text-xl font-semibold text-gray-800">
+                {faq.question}
+              </h3>
+              <p class="text-gray-600">
+                {faq.answer}
+              </p>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <div class="text-center mt-16">
+        <p class="text-lg text-gray-600 mb-8">
+          Не нашли ответ на свой вопрос?
+        </p>
+        <a
+          href="/contact"
+          class="inline-flex items-center px-8 py-4 text-lg font-medium text-white bg-primary-600 rounded-full hover:bg-primary-700 transition-colors duration-300"
+        >
+          Свяжитесь с нами
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

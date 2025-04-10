@@ -1,0 +1,108 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+
+const games = [
+  {
+    title: 'Найди свою часть речи',
+    description: 'Увлекательная игра для изучения частей речи и членов предложения',
+    icon: '🎲',
+    image: '/images/game-parts-of-speech.jpg',
+    href: '/games/parts-of-speech',
+    features: ['Развитие грамматического строя речи', 'Изучение частей речи', 'Анализ предложений']
+  },
+  {
+    title: 'Собери падежи',
+    description: 'Тренировка падежей и склонений существительных в игровой форме',
+    icon: '🎯',
+    image: '/images/game-cases.jpg',
+    href: '/games/cases',
+    features: ['Изучение падежей', 'Склонение существительных', 'Развитие памяти']
+  },
+  {
+    title: 'Безударная гласная в корне',
+    description: 'Отработка правил правописания безударных гласных',
+    icon: '📖',
+    image: '/images/game-vowels.jpg',
+    href: '/games/unstressed-vowels',
+    features: ['Правописание гласных', 'Развитие орфографической зоркости', 'Обогащение словарного запаса']
+  }
+];
+---
+
+<Layout title="Игры - Кубики-Самоучки">
+  <section class="min-h-screen py-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-50/50 via-white to-accent-50/50 opacity-70"></div>
+    <div class="absolute inset-0" style="background-image: url('/patterns/mesh.svg'); background-repeat: repeat; opacity: 0.05;"></div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-accent-600 text-transparent bg-clip-text">
+          Наши игры
+        </h1>
+        <p class="text-xl text-gray-600">
+          Выберите игру и начните увлекательное путешествие в мир русского языка
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        {games.map((game) => (
+          <Card
+            title={game.title}
+            description={game.description}
+            icon={game.icon}
+            variant="glass"
+            href={game.href}
+          >
+            {game.image && (
+              <div class="relative w-full aspect-video mb-6 rounded-lg overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-accent-500/20"></div>
+                <img
+                  src={game.image}
+                  alt={game.title}
+                  class="w-full h-full object-cover transform transition-transform duration-700 hover:scale-110"
+                />
+              </div>
+            )}
+            <div class="space-y-4">
+              <h3 class="text-lg font-semibold text-gray-800">Особенности:</h3>
+              <ul class="space-y-2">
+                {game.features.map((feature) => (
+                  <li class="flex items-center text-gray-600">
+                    <svg class="w-5 h-5 text-primary-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <div class="text-center mt-16">
+        <div class="inline-flex items-center p-1 rounded-full bg-white/80 backdrop-blur-sm shadow-lg">
+          <a
+            href="/rules"
+            class="inline-flex items-center px-8 py-4 text-lg font-medium text-white bg-primary-600 rounded-full hover:bg-primary-700 transition-colors duration-300"
+          >
+            Изучить правила игр
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </a>
+          <a
+            href="/for-parents"
+            class="inline-flex items-center px-6 py-4 text-lg font-medium text-gray-700 hover:text-primary-600 transition-colors duration-300 ml-4"
+          >
+            Информация для родителей
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

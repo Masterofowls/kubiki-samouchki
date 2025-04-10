@@ -1,0 +1,282 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  words: {
+    id: string;
+    word: string;
+    checkWord: string;
+    hint?: string;
+    level: number;
+  }[];
+}
+
+const { title, description, words } = Astro.props;
+---
+
+<div class="game-container bg-white rounded-2xl shadow-lg p-6 md:p-8">
+  <div class="text-center mb-8">
+    <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-sky-600 to-emerald-600 bg-clip-text text-transparent">
+      {title}
+    </h2>
+    <p class="text-slate-600 max-w-2xl mx-auto mb-4">
+      {description}
+    </p>
+    <div class="flex items-center justify-center gap-4">
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium text-slate-500">Очки:</span>
+        <span id="points" class="text-lg font-bold text-emerald-600">0</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium text-slate-500">Время:</span>
+        <span id="timer" class="text-lg font-bold text-sky-600">00:00</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium text-slate-500">Уровень:</span>
+        <select id="level-select" class="px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-700">
+          <option value="1">Начальный</option>
+          <option value="2">Средний</option>
+          <option value="3">Продвинутый</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <!-- Word Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+      {words.map(word => (
+        <div 
+          class="word-card bg-white rounded-lg shadow-md p-4 cursor-pointer hover:shadow-lg transition-shadow"
+          data-id={word.id}
+          data-level={word.level}
+        >
+          <div class="text-center">
+            <div class="text-2xl font-bold mb-2 word-display">{word.word}</div>
+            <div class="check-word hidden text-lg text-emerald-600">{word.checkWord}</div>
+            {word.hint && (
+              <div class="hint-text hidden text-sm text-slate-500 mt-2">{word.hint}</div>
+            )}
+          </div>
+          <div class="mt-4">
+            <input 
+              type="text" 
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-center"
+              placeholder="Введите проверочное слово"
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Controls -->
+    <div class="flex flex-col items-center gap-4">
+      <div class="flex items-center gap-4">
+        <button
+          id="check-answers"
+          class="px-6 py-2 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors flex items-center gap-2"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+          Проверить ответы
+        </button>
+        <button
+          id="hint-button"
+          class="px-6 py-2 bg-sky-600 text-white rounded-full hover:bg-sky-700 transition-colors flex items-center gap-2"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+          </svg>
+          Подсказка
+        </button>
+      </div>
+
+      <div id="feedback-container" class="w-full max-w-lg mx-auto p-4 rounded-lg border-2 border-dashed border-slate-200 text-center hidden">
+        <div id="score" class="text-lg font-medium text-slate-700"></div>
+        <div id="hint" class="mt-2 text-sm text-slate-600"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let gameState = {
+    points: 0,
+    currentLevel: 1,
+    timer: 0,
+    timerInterval: null,
+    hintsUsed: 0,
+    correctAnswers: 0
+  };
+
+  function initGame() {
+    const cards = document.querySelectorAll('.word-card');
+    const checkButton = document.getElementById('check-answers');
+    const hintButton = document.getElementById('hint-button');
+    const levelSelect = document.getElementById('level-select');
+    const feedbackContainer = document.getElementById('feedback-container');
+    const scoreDisplay = document.getElementById('score');
+    const pointsDisplay = document.getElementById('points');
+    const timerDisplay = document.getElementById('timer');
+
+    // Initialize level
+    updateLevel();
+
+    // Start timer
+    startTimer();
+
+    // Add event listeners
+    if (checkButton) {
+      checkButton.addEventListener('click', checkAnswers);
+    }
+
+    if (hintButton) {
+      hintButton.addEventListener('click', showHint);
+    }
+
+    if (levelSelect) {
+      levelSelect.addEventListener('change', (e) => {
+        if (e.target instanceof HTMLSelectElement) {
+          gameState.currentLevel = parseInt(e.target.value);
+          updateLevel();
+        }
+      });
+    }
+
+    function updateLevel() {
+      cards.forEach(card => {
+        if (card instanceof HTMLElement) {
+          const level = parseInt(card.dataset.level || '1');
+          if (level === gameState.currentLevel) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        }
+      });
+    }
+
+    function startTimer() {
+      gameState.timerInterval = setInterval(() => {
+        gameState.timer++;
+        updateUI();
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (gameState.timerInterval) {
+        clearInterval(gameState.timerInterval);
+      }
+    }
+
+    function formatTime(seconds: number) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    function updateUI() {
+      if (pointsDisplay) {
+        pointsDisplay.textContent = gameState.points.toString();
+      }
+      if (timerDisplay) {
+        timerDisplay.textContent = formatTime(gameState.timer);
+      }
+    }
+
+    function showHint() {
+      gameState.hintsUsed++;
+      if (!feedbackContainer || !scoreDisplay) return;
+
+      const visibleCards = Array.from(cards).filter(card => !card.classList.contains('hidden'));
+      const randomCard = visibleCards[Math.floor(Math.random() * visibleCards.length)];
+      
+      if (randomCard instanceof HTMLElement) {
+        const hintText = randomCard.querySelector('.hint-text');
+        if (hintText instanceof HTMLElement) {
+          hintText.classList.remove('hidden');
+        }
+      }
+
+      // Deduct points for using hints
+      gameState.points = Math.max(0, gameState.points - 5);
+      updateUI();
+    }
+
+    function checkAnswers() {
+      if (!feedbackContainer || !scoreDisplay) return;
+
+      let correct = 0;
+      let total = 0;
+
+      cards.forEach(card => {
+        if (card instanceof HTMLElement && !card.classList.contains('hidden')) {
+          const input = card.querySelector('input');
+          const checkWord = card.querySelector('.check-word');
+          
+          if (input instanceof HTMLInputElement && checkWord instanceof HTMLElement) {
+            total++;
+            const userAnswer = input.value.toLowerCase().trim();
+            const correctAnswer = checkWord.textContent?.toLowerCase().trim() || '';
+
+            if (userAnswer === correctAnswer) {
+              correct++;
+              input.classList.add('border-emerald-500');
+              input.classList.remove('border-red-500');
+            } else {
+              input.classList.add('border-red-500');
+              input.classList.remove('border-emerald-500');
+            }
+
+            // Show correct answer
+            checkWord.classList.remove('hidden');
+          }
+        }
+      });
+
+      const score = Math.round((correct / total) * 100);
+      const timeBonus = Math.max(0, 100 - gameState.timer);
+      const hintPenalty = gameState.hintsUsed * 5;
+      const levelPoints = score + timeBonus - hintPenalty;
+
+      gameState.points += Math.max(0, levelPoints);
+
+      scoreDisplay.innerHTML = `
+        <div class="text-2xl font-bold mb-2">Результат: ${score}%</div>
+        <div class="text-sm text-slate-600">
+          Время: ${formatTime(gameState.timer)} (+${timeBonus} очков)<br>
+          Использовано подсказок: ${gameState.hintsUsed} (-${hintPenalty} очков)<br>
+          Итого очков: ${levelPoints}
+        </div>
+      `;
+      feedbackContainer.classList.remove('hidden');
+
+      stopTimer();
+      updateUI();
+    }
+  }
+
+  // Initialize when the DOM is loaded
+  document.addEventListener('astro:page-load', initGame);
+</script>
+
+<style>
+  .word-card {
+    transition: all 0.3s ease;
+  }
+
+  .word-card:hover {
+    transform: translateY(-2px);
+  }
+
+  input {
+    transition: all 0.3s ease;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: #60A5FA;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+  }
+</style>

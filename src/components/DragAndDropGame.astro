@@ -1,0 +1,366 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  items: {
+    id: string;
+    text: string;
+    category: string;
+  }[];
+  categories: {
+    id: string;
+    name: string;
+    description?: string;
+  }[];
+}
+
+const { title, description, items, categories } = Astro.props;
+---
+
+<div class="game-container bg-white rounded-2xl shadow-lg p-6 md:p-8">
+  <div class="text-center mb-8">
+    <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-sky-600 to-emerald-600 bg-clip-text text-transparent">
+      {title}
+    </h2>
+    <p class="text-slate-600 max-w-2xl mx-auto mb-4">
+      {description}
+    </p>
+    <div class="flex items-center justify-center gap-4">
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium text-slate-500">Очки:</span>
+        <span id="points" class="text-lg font-bold text-emerald-600">0</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium text-slate-500">Время:</span>
+        <span id="timer" class="text-lg font-bold text-sky-600">00:00</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium text-slate-500">Прогресс:</span>
+        <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-emerald-500 w-0 transition-all duration-300"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Items to drag -->
+    <div 
+      id="items-container"
+      class="bg-slate-50 rounded-xl p-4 min-h-[300px]"
+      data-game-items
+    >
+      <h3 class="text-lg font-semibold mb-4 text-slate-700">Перетащите элементы в нужные категории:</h3>
+      <div class="flex flex-wrap gap-2" id="draggable-items">
+        {items.map(item => (
+          <div
+            class="draggable-item bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 cursor-move select-none hover:shadow-md transition-shadow"
+            data-id={item.id}
+            data-category={item.category}
+          >
+            {item.text}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="grid grid-cols-1 gap-4">
+      {categories.map(category => (
+        <div
+          class="category bg-slate-50 rounded-xl p-4 min-h-[100px]"
+          data-category-id={category.id}
+        >
+          <h3 class="text-lg font-semibold mb-2 text-slate-700">{category.name}</h3>
+          {category.description && (
+            <p class="text-sm text-slate-500 mb-3">{category.description}</p>
+          )}
+          <div
+            class="droppable-zone min-h-[60px] bg-white/50 rounded-lg border-2 border-dashed border-slate-300 p-2 transition-colors"
+            data-category={category.id}
+          >
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Game controls and feedback -->
+  <div class="mt-8">
+    <div class="flex flex-col items-center gap-4">
+      <div class="flex items-center gap-4">
+        <button
+          id="check-answers"
+          class="px-6 py-2 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors flex items-center gap-2"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+          Проверить ответы
+        </button>
+        <button
+          id="hint-button"
+          class="px-6 py-2 bg-sky-600 text-white rounded-full hover:bg-sky-700 transition-colors flex items-center gap-2"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+          </svg>
+          Подсказка
+        </button>
+      </div>
+      
+      <div id="feedback-container" class="w-full max-w-lg mx-auto p-4 rounded-lg border-2 border-dashed border-slate-200 text-center hidden">
+        <div id="score" class="text-lg font-medium text-slate-700"></div>
+        <div id="hint" class="mt-2 text-sm text-slate-600"></div>
+      </div>
+
+      <!-- Level completion message -->
+      <div id="level-complete" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-8 max-w-md mx-4 text-center transform transition-all scale-90 opacity-0">
+          <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-2">Уровень пройден!</h3>
+          <p class="text-slate-600 mb-6">Поздравляем! Вы успешно завершили этот уровень.</p>
+          <div class="flex justify-center gap-4">
+            <button id="next-level" class="px-6 py-2 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors">
+              Следующий уровень
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let gameState = {
+    points: 0,
+    currentLevel: 1,
+    timer: 0,
+    timerInterval: null,
+    hintsUsed: 0,
+    correctAnswers: 0
+  };
+
+  // Initialize game functionality
+  function initGame() {
+    const items = document.querySelectorAll('.draggable-item');
+    const zones = document.querySelectorAll('.droppable-zone');
+    const checkButton = document.getElementById('check-answers');
+    const hintButton = document.getElementById('hint-button');
+    const scoreDisplay = document.getElementById('score');
+    const pointsDisplay = document.getElementById('points');
+    const timerDisplay = document.getElementById('timer');
+    const progressBar = document.getElementById('progress-bar');
+    const levelComplete = document.getElementById('level-complete');
+    const nextLevelButton = document.getElementById('next-level');
+    const feedbackContainer = document.getElementById('feedback-container');
+
+    // Initialize drag and drop
+    items.forEach(item => {
+      item.addEventListener('dragstart', handleDragStart);
+      item.setAttribute('draggable', 'true');
+    });
+
+    zones.forEach(zone => {
+      zone.addEventListener('dragover', handleDragOver);
+      zone.addEventListener('drop', handleDrop);
+    });
+
+    // Start timer
+    startTimer();
+
+    // Add event listeners
+    checkButton.addEventListener('click', () => checkAnswers());
+    hintButton.addEventListener('click', () => showHint());
+    nextLevelButton.addEventListener('click', () => loadNextLevel());
+
+    // Update UI
+    updateUI();
+
+    if (checkButton) {
+      checkButton.addEventListener('click', checkAnswers);
+    }
+
+    function handleDragStart(e) {
+      if (e.target instanceof HTMLElement) {
+        e.dataTransfer?.setData('text/plain', e.target.dataset.id || '');
+        e.target.classList.add('opacity-50');
+      }
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      if (e.target instanceof HTMLElement) {
+        e.target.classList.add('bg-slate-100');
+      }
+    }
+
+    function startTimer() {
+      gameState.timerInterval = setInterval(() => {
+        gameState.timer++;
+        updateUI();
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(gameState.timerInterval);
+    }
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    function updateUI() {
+      if (pointsDisplay) pointsDisplay.textContent = gameState.points.toString();
+      if (timerDisplay) timerDisplay.textContent = formatTime(gameState.timer);
+    }
+
+    function updateProgress() {
+      if (!progressBar) return;
+      const totalItems = document.querySelectorAll('.draggable-item').length;
+      const placedItems = document.querySelectorAll('.droppable-zone .draggable-item').length;
+      const progress = (placedItems / totalItems) * 100;
+      progressBar.style.width = `${progress}%`;
+    }
+
+    function showHint() {
+      gameState.hintsUsed++;
+      if (!feedbackContainer || !scoreDisplay) return;
+      
+      const hints = [
+        'Обратите внимание на вопросы, на которые отвечает каждая часть речи',
+        'Существительные обозначают предметы и явления',
+        'Прилагательные описывают признаки предметов'
+      ];
+
+      scoreDisplay.innerHTML = `<div class="text-sm text-slate-600">${hints[Math.floor(Math.random() * hints.length)]}</div>`;
+      feedbackContainer.classList.remove('hidden');
+      
+      // Deduct points for using hints
+      gameState.points = Math.max(0, gameState.points - 5);
+      updateUI();
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const zone = e.target;
+      const itemId = e.dataTransfer?.getData('text/plain');
+      const item = document.querySelector(`[data-id="${itemId}"]`);
+
+      if (item instanceof HTMLElement && zone.classList.contains('droppable-zone')) {
+        zone.appendChild(item);
+        item.classList.remove('opacity-50');
+        zone.classList.remove('bg-slate-100');
+        updateProgress();
+      }
+    }
+
+    function checkAnswers() {
+      const zones = document.querySelectorAll('.droppable-zone');
+      let correctAnswers = 0;
+      let totalItems = 0;
+
+      zones.forEach(zone => {
+        const items = zone.querySelectorAll('.draggable-item');
+        items.forEach(item => {
+          totalItems++;
+          if (item instanceof HTMLElement && item.dataset.category === zone.dataset.category) {
+            correctAnswers++;
+            item.classList.add('border-emerald-500');
+          } else {
+            item.classList.add('border-red-500');
+          }
+        });
+      });
+
+      gameState.correctAnswers = correctAnswers;
+      const score = Math.round((correctAnswers / totalItems) * 100);
+      
+      // Calculate points based on time and hints used
+      const timeBonus = Math.max(0, 100 - gameState.timer);
+      const hintPenalty = gameState.hintsUsed * 5;
+      const levelPoints = score + timeBonus - hintPenalty;
+      
+      gameState.points += Math.max(0, levelPoints);
+      
+      // Show feedback
+      if (feedbackContainer && scoreDisplay) {
+        scoreDisplay.innerHTML = `
+          <div class="text-2xl font-bold mb-2">Результат: ${score}%</div>
+          <div class="text-sm text-slate-600">
+            Время: ${formatTime(gameState.timer)} (+${timeBonus} очков)<br>
+            Использовано подсказок: ${gameState.hintsUsed} (-${hintPenalty} очков)<br>
+            Итого очков: ${levelPoints}
+          </div>
+        `;
+        feedbackContainer.classList.remove('hidden');
+      }
+
+      // Check if level is complete
+      if (score >= 80 && levelComplete) {
+        setTimeout(() => {
+          levelComplete.classList.remove('hidden');
+          const dialog = levelComplete.querySelector('div');
+          if (dialog) {
+            dialog.classList.remove('scale-90', 'opacity-0');
+          }
+        }, 1000);
+      }
+
+      stopTimer();
+      updateUI();
+    }
+
+    function loadNextLevel() {
+      gameState.currentLevel++;
+      gameState.timer = 0;
+      gameState.hintsUsed = 0;
+      
+      // Reset UI
+      document.querySelectorAll('.draggable-item').forEach(item => {
+        if (item instanceof HTMLElement && parseInt(item.dataset.level || '1') === gameState.currentLevel) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+
+      // Reset feedback and progress
+      if (feedbackContainer) feedbackContainer.classList.add('hidden');
+      if (levelComplete) levelComplete.classList.add('hidden');
+      if (progressBar) progressBar.style.width = '0%';
+
+      // Update level selector
+      const levelSelect = document.getElementById('level-select');
+      if (levelSelect instanceof HTMLSelectElement) {
+        levelSelect.value = gameState.currentLevel.toString();
+      }
+
+      startTimer();
+      updateUI();
+    }
+  }
+
+  // Initialize when the DOM is loaded
+  document.addEventListener('astro:page-load', initGame);
+</script>
+
+<style>
+  .draggable-item {
+    transition: transform 0.2s ease;
+  }
+
+  .draggable-item:hover {
+    transform: translateY(-2px);
+  }
+
+  .droppable-zone.drag-over {
+    @apply bg-slate-100;
+  }
+</style>

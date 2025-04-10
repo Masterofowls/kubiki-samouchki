@@ -1,0 +1,107 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Button from '../../components/Button.astro';
+import DragAndDropGame from '../../components/DragAndDropGame.astro';
+
+const rules = [
+  'Определите часть речи для каждого слова',
+  'Найдите все существительные, прилагательные и глаголы',
+  'Составьте предложения, используя карточки',
+  'Определите члены предложения',
+  'Получите обратную связь и подсказки',
+  'Зарабатывайте очки и открывайте новые уровни'
+];
+
+const gameItems = [
+  // Уровень 1
+  { id: '1', text: 'Красивый', category: 'adjective', level: 1 },
+  { id: '2', text: 'Бежать', category: 'verb', level: 1 },
+  { id: '3', text: 'Дом', category: 'noun', level: 1 },
+  { id: '4', text: 'Смелый', category: 'adjective', level: 1 },
+  { id: '5', text: 'Читать', category: 'verb', level: 1 },
+  { id: '6', text: 'Книга', category: 'noun', level: 1 },
+  // Уровень 2
+  { id: '7', text: 'Весёлый', category: 'adjective', level: 2 },
+  { id: '8', text: 'Играть', category: 'verb', level: 2 },
+  { id: '9', text: 'Мяч', category: 'noun', level: 2 },
+  { id: '10', text: 'Яркий', category: 'adjective', level: 2 },
+  { id: '11', text: 'Петь', category: 'verb', level: 2 },
+  { id: '12', text: 'Музыка', category: 'noun', level: 2 },
+  // Уровень 3
+  { id: '13', text: 'Увлекательный', category: 'adjective', level: 3 },
+  { id: '14', text: 'Путешествовать', category: 'verb', level: 3 },
+  { id: '15', text: 'Приключение', category: 'noun', level: 3 }
+];
+
+const categories = [
+  { 
+    id: 'noun', 
+    name: 'Существительные', 
+    description: 'Отвечают на вопросы кто? что?' 
+  },
+  { 
+    id: 'adjective', 
+    name: 'Прилагательные', 
+    description: 'Отвечают на вопросы какой? какая? какое?' 
+  },
+  { 
+    id: 'verb', 
+    name: 'Глаголы', 
+    description: 'Отвечают на вопросы что делать? что сделать?' 
+  }
+];
+---
+
+<Layout title="Найди свою часть речи">
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-20">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+            Найди свою часть речи
+          </h1>
+          <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+            Увлекательная игра для изучения частей речи и их роли в предложениях
+          </p>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-xl p-8 mb-12">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-semibold">Правила игры</h2>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium text-slate-500">Уровень:</span>
+              <select id="level-select" class="px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-medium text-slate-700">
+                <option value="1">Начальный</option>
+                <option value="2">Средний</option>
+                <option value="3">Продвинутый</option>
+              </select>
+            </div>
+          </div>
+          <ul class="space-y-4">
+            {rules.map(rule => (
+              <li class="flex items-start">
+                <svg class="h-6 w-6 text-green-500 mr-3 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                <span>{rule}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <DragAndDropGame
+          title="Игра: Найди свою часть речи"
+          description="Перетащите каждое слово в соответствующую категорию частей речи"
+          items={gameItems}
+          categories={categories}
+        />
+
+        <div class="text-center">
+          <Button variant="gradient" size="lg" href="/games">
+            Вернуться к играм
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

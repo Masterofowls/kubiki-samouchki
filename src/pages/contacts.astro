@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { motion } from 'framer-motion';
+---
+
+<Layout title="Контакты">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold mb-8 text-center">Свяжитесь с нами</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+      <div class="card p-6">
+        <h2 class="text-2xl font-semibold mb-6">Форма обратной связи</h2>
+        <form class="space-y-4">
+          <div class="form-group">
+            <label for="name" class="block text-gray-700 mb-2">Ваше имя</label>
+            <input type="text" id="name" name="name" class="form-control" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="email" class="block text-gray-700 mb-2">Email</label>
+            <input type="email" id="email" name="email" class="form-control" required />
+          </div>
+          
+          <div class="form-group">
+            <label for="subject" class="block text-gray-700 mb-2">Тема</label>
+            <select id="subject" name="subject" class="form-control">
+              <option value="question">Вопрос по методике</option>
+              <option value="cooperation">Сотрудничество</option>
+              <option value="feedback">Отзыв</option>
+              <option value="other">Другое</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="message" class="block text-gray-700 mb-2">Сообщение</label>
+            <textarea id="message" name="message" rows="5" class="form-control" required></textarea>
+          </div>
+          
+          <button type="submit" class="btn btn-primary w-full">Отправить сообщение</button>
+        </form>
+      </div>
+
+      <div class="space-y-6">
+        <div class="card p-6">
+          <h2 class="text-2xl font-semibold mb-4">Контактная информация</h2>
+          <div class="space-y-4">
+            <div class="flex items-center space-x-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <a href="mailto:info@kubiki-samouchki.ru" class="text-gray-600 hover:text-blue-600">info@kubiki-samouchki.ru</a>
+            </div>
+            <div class="flex items-center space-x-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+              </svg>
+              <a href="https://t.me/kubiki_samouchki" target="_blank" rel="noopener noreferrer" class="text-gray-600 hover:text-blue-600">Telegram-канал</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="text-2xl font-semibold mb-4">Часто задаваемые вопросы</h2>
+          <div class="space-y-4">
+            <div class="mb-4">
+              <h3 class="font-semibold mb-2">Как получить консультацию?</h3>
+              <p class="text-gray-600">Заполните форму обратной связи или напишите нам на почту. Мы ответим в течение 24 часов.</p>
+            </div>
+            <div class="mb-4">
+              <h3 class="font-semibold mb-2">Где купить кубики?</h3>
+              <p class="text-gray-600">Информация о приобретении игры доступна в нашем Telegram-канале.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

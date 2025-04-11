@@ -24,21 +24,29 @@ const cubeIcons = [
 ---
 
 <div class="hero-section relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-  <!-- Background Image with Parallax -->
-  <div class="absolute inset-0 z-0">
-    <div class="parallax-bg absolute inset-0" style={`background-image: url(${image})`}></div>
-    <div class="absolute inset-0 bg-gradient-to-br from-primary-900/90 via-primary-800/85 to-accent-900/90 mix-blend-multiply"></div>
-    <div class="absolute inset-0 bg-mesh-pattern opacity-5"></div>
+  <!-- Background Image -->
+  <div class="absolute inset-0 z-0 bg-primary-900">
+    <picture>
+      <source media="(max-width: 768px)" srcset={image} />
+      <img 
+        src={image} 
+        alt="" 
+        class="absolute inset-0 w-full h-full object-cover opacity-50"
+        loading="eager"
+        decoding="sync"
+      />
+    </picture>
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-900/90 to-accent-900/90 backdrop-blur-[2px]"></div>
   </div>
 
-  <!-- Floating Cubes -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+  <!-- Floating Cubes (only on desktop) -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none hidden md:block">
     {cubeIcons.map(({ icon, delay }) => (
       <div 
-        class="absolute animate-float"
+        class="absolute animate-float-reduced motion-reduce:animate-none"
         style={`animation-delay: ${delay}ms; left: ${Math.random() * 90}%; top: ${Math.random() * 70}%`}
       >
-        <span class="text-4xl md:text-5xl text-white/20 blur-sm">{icon}</span>
+        <span class="text-4xl md:text-5xl text-white/20">{icon}</span>
       </div>
     ))}
   </div>
@@ -56,20 +64,17 @@ const cubeIcons = [
       </div>
 
       <!-- Title with Gradient -->
-      <h1 
-        class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in
-        bg-gradient-to-r from-white via-white/90 to-white/80 text-transparent bg-clip-text"
-      >
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 text-white">
         {title}
       </h1>
 
-      <!-- Subtitle with Animation -->
-      <p class="text-xl md:text-2xl text-white/90 mb-8 animate-slide-up max-w-2xl mx-auto leading-relaxed">
+      <!-- Subtitle -->
+      <p class="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
         {subtitle}
       </p>
 
       <!-- Action Buttons -->
-      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-in-up">
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
         <a 
           href="/rules" 
           class="btn btn-primary btn-lg group bg-white/20 hover:bg-white/30 backdrop-blur-sm 
@@ -114,36 +119,24 @@ const cubeIcons = [
     </div>
   </div>
 
-  <!-- Decorative Elements -->
-  <div class="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black/20 to-transparent"></div>
-  <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary-500/20 rounded-full mix-blend-overlay filter blur-3xl opacity-70 animate-pulse-slow"></div>
-  <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-500/20 rounded-full mix-blend-overlay filter blur-3xl opacity-70 animate-pulse-slow" style="animation-delay: 1s;"></div>
+  <!-- Decorative Elements (only on desktop) -->
+  <div class="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black/20 to-transparent hidden md:block"></div>
+  <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary-500/20 rounded-full mix-blend-overlay opacity-70 hidden md:block motion-reduce:hidden"></div>
+  <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-500/20 rounded-full mix-blend-overlay opacity-70 hidden md:block motion-reduce:hidden"></div>
 </div>
 
 <style>
-  .hero-section {
-    perspective: 1000px;
-  }
-
-  .parallax-bg {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    transform: scale(1.1);
-    transition: transform 0.5s ease-out;
-  }
-
-  @keyframes float {
+  @keyframes float-reduced {
     0%, 100% {
-      transform: translateY(0) rotate(0deg);
+      transform: translateY(0);
     }
     50% {
-      transform: translateY(-20px) rotate(10deg);
+      transform: translateY(-10px);
     }
   }
 
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  .animate-float-reduced {
+    animation: float-reduced 4s ease-in-out infinite;
   }
 
   .animate-fade-in {
@@ -158,43 +151,30 @@ const cubeIcons = [
     animation: fadeInUp 1s ease-out;
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
 
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 </style>
 
 <script>
-  const parallaxBg = document.querySelector('.parallax-bg') as HTMLElement;
-  
-  window.addEventListener('scroll', () => {
-    if (parallaxBg) {
-      const scrolled = window.scrollY;
-      const scale = 1.1 + (scrolled * 0.0005);
-      const translateY = scrolled * 0.5;
-      parallaxBg.style.transform = `scale(${scale}) translateY(${translateY}px)`;
-    }
-  });
+  // Only enable parallax on desktop and if user hasn't requested reduced motion
+  if (window.matchMedia('(min-width: 768px) and (prefers-reduced-motion: no-preference)').matches) {
+    const heroImg = document.querySelector('.hero-section img') as HTMLElement;
+    let ticking = false;
+    let lastScrollY = window.scrollY;
+    
+    const updateParallax = () => {
+      if (heroImg) {
+        const translateY = lastScrollY * 0.2;
+        heroImg.style.transform = `translate3d(0, ${translateY}px, 0)`;
+      }
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      lastScrollY = window.scrollY;
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }, { passive: true });
+  }
 </script>

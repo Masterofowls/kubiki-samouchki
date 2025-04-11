@@ -18,7 +18,7 @@ const {
 // Performance optimization: Preload critical assets
 const criticalAssets = [
   { href: '/fonts/inter-var.woff2', as: 'font', type: 'font/woff2', crossorigin: true },
-  { href: '/images/pattern.svg', as: 'image' }
+  { href: '/patterns/mesh.svg', as: 'image' }
 ];
 ---
 
@@ -124,7 +124,7 @@ const criticalAssets = [
 					<div class="absolute -top-40 -right-32 w-[20rem] md:w-[40rem] h-[20rem] md:h-[40rem] bg-blue-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
 					<div class="absolute -bottom-40 -left-32 w-[20rem] md:w-[40rem] h-[20rem] md:h-[40rem] bg-emerald-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
 					<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[20rem] md:w-[40rem] h-[20rem] md:h-[40rem] bg-violet-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
-					<div class="absolute inset-0 bg-[url('/patterns/mesh.svg')] bg-repeat opacity-10 bg-fixed"></div>
+					<div class="absolute inset-0 bg-[url('/patterns/mesh.svg')] bg-repeat opacity-5 bg-fixed"></div>
 					<div class="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-white/80"></div>
 				</div>
 					<slot />

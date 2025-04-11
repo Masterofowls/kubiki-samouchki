@@ -1,0 +1,99 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  class: className = '',
+  loading = 'lazy'
+} = Astro.props;
+
+// Generate a low-quality placeholder
+const placeholder = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${width || 400} ${height || 300}'%3E%3Cfilter id='b' color-interpolation-filters='sRGB'%3E%3CfeGaussianBlur stdDeviation='.5'%3E%3C/feGaussianBlur%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='1 1'%3E%3C/feFuncA%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Cimage filter='url(%23b)' x='0' y='0' height='100%25' width='100%25' href='${src}'/%3E%3C/svg%3E`;
+---
+
+<div class={`relative overflow-hidden ${className}`}>
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding="async"
+    style={`background: url(${placeholder}) no-repeat center center; background-size: cover;`}
+    class="w-full h-full object-cover transition-opacity duration-300"
+    onload="this.style.opacity = 1"
+  />
+  <noscript>
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      class="w-full h-full object-cover"
+    />
+  </noscript>
+</div>
+
+<style>
+  img {
+    opacity: 0;
+  }
+  
+  img.loaded {
+    opacity: 1;
+  }
+  
+  /* Prevent layout shift */
+  .relative {
+    aspect-ratio: attr(width) / attr(height);
+  }
+  
+  @supports not (aspect-ratio: 1) {
+    .relative::before {
+      float: left;
+      padding-top: calc(attr(height) / attr(width) * 100%);
+      content: '';
+    }
+    .relative::after {
+      display: block;
+      content: '';
+      clear: both;
+    }
+  }
+</style>
+
+<script>
+  // Intersection Observer for lazy loading
+  const images = document.querySelectorAll('img[loading="lazy"]');
+  
+  if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          img.src = img.dataset.src;
+          img.classList.add('loaded');
+          observer.unobserve(img);
+        }
+      });
+    });
+
+    images.forEach(img => imageObserver.observe(img));
+  } else {
+    // Fallback for browsers that don't support Intersection Observer
+    images.forEach(img => {
+      img.src = img.dataset.src;
+      img.classList.add('loaded');
+    });
+  }
+</script>

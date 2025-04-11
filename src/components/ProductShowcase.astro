@@ -1,0 +1,115 @@
+---
+import LazyImage from './LazyImage.astro';
+
+const images = [
+  {
+    src: '/images/dice-set-1.svg',
+    alt: 'Набор кубиков для изучения частей речи',
+    title: 'Набор для частей речи',
+    description: 'Специальные кубики с обозначениями частей речи и членов предложения',
+    width: 400,
+    height: 300
+  },
+  {
+    src: '/images/dice-set-2.svg',
+    alt: 'Кубики для изучения падежей',
+    title: 'Кубики для падежей',
+    description: 'Набор для практики склонений и падежей существительных',
+    width: 400,
+    height: 300
+  },
+  {
+    src: '/images/kids-playing.svg',
+    alt: 'Дети играют с кубиками',
+    title: 'Групповые занятия',
+    description: 'Возможность играть индивидуально или в группе до 4 человек',
+    width: 400,
+    height: 300
+  }
+];
+
+const features = [
+  {
+    icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
+    text: '9 специальных кубиков'
+  },
+  {
+    icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
+    text: 'Карточки со словами'
+  },
+  {
+    icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
+    text: 'Карточки с картинками'
+  },
+  {
+    icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z',
+    text: 'Карточки с предложениями'
+  },
+  {
+    icon: 'M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    text: '5 игр, 9 вариантов'
+  }
+];
+---
+
+<section class="py-12 sm:py-20 bg-gradient-to-br from-blue-50 to-purple-50">
+  <div class="container mx-auto px-4">
+    <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">Кубики-Самоучки в действии</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      {images.map(image => (
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-[1.02] focus-within:ring-2 focus-within:ring-blue-500">
+          <LazyImage
+            src={image.src}
+            alt={image.alt}
+            width={image.width}
+            height={image.height}
+            class="w-full h-48 sm:h-64"
+          />
+          <div class="p-4 sm:p-6">
+            <h3 class="text-lg sm:text-xl font-semibold mb-2">{image.title}</h3>
+            <p class="text-gray-600 text-sm sm:text-base">{image.description}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-12 sm:mt-16 bg-white rounded-xl shadow-lg p-4 sm:p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-center">
+        <div class="relative aspect-w-4 aspect-h-3 rounded-lg overflow-hidden">
+          <LazyImage
+            src="/images/product-cover.svg"
+            alt="Обложка Кубики-Самоучки"
+            width={400}
+            height={300}
+            class="rounded-lg shadow-lg w-full h-full object-cover transform transition-transform duration-300 hover:scale-105"
+          />
+        </div>
+        
+        <div>
+          <h3 class="text-xl sm:text-2xl font-bold mb-4">Комплект включает:</h3>
+          <ul class="space-y-3 sm:space-y-4">
+            {features.map(feature => (
+              <li class="flex items-center gap-3 p-2 rounded-lg transition-colors duration-200 hover:bg-gray-50">
+                <svg
+                  class="h-5 w-5 sm:h-6 sm:w-6 text-green-500 flex-shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d={feature.icon}
+                  />
+                </svg>
+                <span class="text-sm sm:text-base">{feature.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

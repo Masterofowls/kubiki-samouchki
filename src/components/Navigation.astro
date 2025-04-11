@@ -20,11 +20,30 @@ const navItems = [
 const pathname = new URL(Astro.request.url).pathname;
 
 const baseClass = 'relative';
-
 const textClass = 'text-slate-600 hover:text-slate-900';
+
+// Intersection Observer for navigation bar
+const observerScript = `
+  const header = document.getElementById('main-header');
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        header.classList.remove('nav-scrolled');
+      } else {
+        header.classList.add('nav-scrolled');
+      }
+    },
+    { threshold: [0], rootMargin: '-80px 0px 0px 0px' }
+  );
+
+  const sentinel = document.createElement('div');
+  sentinel.classList.add('nav-sentinel');
+  document.body.prepend(sentinel);
+  observer.observe(sentinel);
+`;
 ---
 
-<nav class={`w-full transition-all duration-300 ${baseClass}`} id="main-header">
+<nav class={`fixed w-full transition-all duration-300 ${baseClass} bg-white/95 backdrop-blur-sm shadow-sm z-50`} id="main-header">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
     <div class="flex items-center justify-between">
       <!-- Logo -->
@@ -37,34 +56,23 @@ const textClass = 'text-slate-600 hover:text-slate-900';
       </a>
 
       <!-- Desktop Navigation -->
-      <div class="hidden md:flex items-center space-x-1">
+      <div class="hidden md:flex items-center space-x-2">
         {navItems.map(item => (
           <a
             href={item.href}
             class={`
-              nav-link group relative px-4 py-2 rounded-full
-              transition-all duration-300 
+              nav-link group relative px-4 py-2 rounded-lg
+              transition-colors duration-200
               ${pathname === item.href 
-                ? variant === 'transparent'
-                  ? 'text-white bg-white/20'
-                  : 'text-primary-600 bg-primary-50'
-                : `${textClass} hover:bg-white/10`
+                ? 'text-blue-600 bg-blue-50 font-medium'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }
             `}
           >
-            <span class="relative z-10 flex items-center gap-2">
+            <span class="flex items-center gap-2">
               <span class="text-lg">{item.icon}</span>
               <span>{item.text}</span>
             </span>
-
-            {/* Hover Effect */}
-            <span class="
-              absolute inset-0 rounded-full
-              bg-gradient-to-r from-primary-500/20 to-accent-500/20
-              opacity-0 group-hover:opacity-100
-              transition-opacity duration-300
-              blur
-            "></span>
           </a>
         ))}
 
@@ -73,14 +81,7 @@ const textClass = 'text-slate-600 hover:text-slate-900';
             href="https://t.me/kubiki_samouchki"
             target="_blank"
             rel="noopener noreferrer"
-            class={`
-              flex items-center gap-2 px-4 py-2 rounded-full
-              ${variant === 'transparent' 
-                ? 'bg-white/10 hover:bg-white/20 text-white' 
-                : 'bg-primary-500 hover:bg-primary-600 text-white'
-              }
-              transition-all duration-300 hover:scale-105
-            `}
+            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
           >
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.015-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.48.33-.913.49-1.302.48-.428-.009-1.252-.241-1.865-.44-.756-.244-1.358-.374-1.307-.789.027-.216.324-.437.892-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.477-1.635.398-.006.922.155 1.059.452.089.189.132.394.13.615l.001.005z"/>
@@ -93,8 +94,10 @@ const textClass = 'text-slate-600 hover:text-slate-900';
       <!-- Mobile Menu Button -->
       <button
         id="mobile-menu-button"
-        class={`md:hidden p-2 rounded-lg ${textClass} hover:bg-white/10 transition-colors`}
+        class={`md:hidden p-2 rounded-lg ${textClass} hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`}
         aria-label="Открыть меню"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
       >
         <svg
           class="w-6 h-6"
@@ -115,25 +118,19 @@ const textClass = 'text-slate-600 hover:text-slate-900';
     <!-- Mobile Navigation -->
     <div
       id="mobile-menu"
-      class={`
-        hidden md:hidden fixed inset-x-0 top-[57px]
-        ${variant === 'transparent' ? 'bg-black/50' : 'bg-white'}
-        backdrop-blur-lg border-t border-white/10
-      `}
+      class="hidden md:hidden fixed inset-0 top-[60px] bg-white z-40"
     >
-      <div class="w-full px-4 py-4 flex flex-col space-y-2">
+      <div class="h-full w-full px-4 py-4 flex flex-col space-y-1 overflow-y-auto">
         {navItems.map(item => (
           <a
             href={item.href}
             class={`
-              flex items-center gap-2 px-4 py-3 rounded-xl
+              flex items-center gap-3 px-4 py-3 rounded-lg
               ${pathname === item.href 
-                ? variant === 'transparent'
-                  ? 'bg-white/20 text-white'
-                  : 'bg-primary-50 text-primary-600'
-                : `${textClass} hover:bg-white/10`
+                ? 'text-blue-600 bg-blue-50 font-medium'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }
-              transition-all duration-300
+              transition-colors duration-200
             `}
           >
             <span class="text-xl">{item.icon}</span>
@@ -172,48 +169,105 @@ const textClass = 'text-slate-600 hover:text-slate-900';
   const mobileMenu = document.getElementById('mobile-menu');
   let lastScroll = 0;
 
-  // Handle scroll
-  window.addEventListener('scroll', () => {
-    if (header) {
-      const currentScroll = window.pageYOffset;
+  // Toggle mobile menu with animation
+  function toggleMobileMenu(show?: boolean) {
+    if (mobileMenuButton && mobileMenu) {
+      const isExpanded = show ?? mobileMenuButton.getAttribute('aria-expanded') === 'true';
+      mobileMenuButton.setAttribute('aria-expanded', (!isExpanded).toString());
       
-      // Show/hide header on scroll
-      if (currentScroll <= 0) {
-        header.style.transform = 'translateY(0)';
-      } else if (currentScroll > lastScroll) {
-        header.style.transform = 'translateY(-100%)';
-        if (mobileMenu) mobileMenu.classList.add('hidden');
+      if (!isExpanded) {
+        mobileMenu.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => {
+          mobileMenu.style.opacity = '1';
+        });
       } else {
-        header.style.transform = 'translateY(0)';
+        mobileMenu.style.opacity = '0';
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+          document.body.style.overflow = '';
+        }, 200);
       }
-
-      // Add/remove background on scroll
-      if (currentScroll > 50) {
-        header.classList.add('bg-white/90', 'border-gray-200/20');
-        header.classList.remove('bg-white/5', 'border-white/10');
-      } else {
-        header.classList.remove('bg-white/90', 'border-gray-200/20');
-        header.classList.add('bg-white/5', 'border-white/10');
-      }
-
-      lastScroll = currentScroll;
     }
-  });
-
-  // Handle mobile menu
-  if (mobileMenuButton && mobileMenu) {
-    mobileMenuButton.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-    });
   }
 
-  // Close mobile menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (mobileMenu && !mobileMenu.contains(e.target as Node) && 
-        mobileMenuButton && !mobileMenuButton.contains(e.target as Node)) {
-      mobileMenu.classList.add('hidden');
+  // Handle scroll with throttling
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        if (header) {
+          const currentScroll = window.pageYOffset;
+
+          if (currentScroll <= 0) {
+            header.style.transform = 'translateY(0)';
+          } else if (currentScroll > lastScroll) {
+            // Scrolling down - hide header and close menu
+            header.style.transform = 'translateY(-100%)';
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+              toggleMobileMenu(false);
+            }
+          } else {
+            // Scrolling up - show header
+            header.style.transform = 'translateY(0)';
+          }
+
+          lastScroll = currentScroll;
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // Handle mobile menu toggle
+  mobileMenuButton?.addEventListener('click', () => toggleMobileMenu());
+
+  // Close mobile menu on wider screens
+  const mediaQuery = window.matchMedia('(min-width: 768px)');
+  function handleViewportChange(event: MediaQueryListEvent) {
+    if (event.matches && mobileMenu && !mobileMenu.classList.contains('hidden')) {
+      toggleMobileMenu(false);
+    }
+  }
+  mediaQuery.addEventListener('change', handleViewportChange);
+
+  // Handle escape key
+  document.addEventListener('keydown', (event: KeyboardEvent) => {
+    if (event.key === 'Escape' && mobileMenu && !mobileMenu.classList.contains('hidden')) {
+      toggleMobileMenu(false);
     }
   });
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', (event: MouseEvent) => {
+    const target = event.target as Node;
+    if (mobileMenu && !mobileMenu.contains(target) && 
+        mobileMenuButton && !mobileMenuButton.contains(target) &&
+        !mobileMenu.classList.contains('hidden')) {
+      toggleMobileMenu(false);
+    }
+  });
+
+  // Clean up
+  window.addEventListener('beforeunload', () => {
+    mobileMenuButton?.removeEventListener('click', () => toggleMobileMenu());
+    mediaQuery.removeEventListener('change', handleViewportChange);
+  });
+</script>
+
+<style>
+  #mobile-menu {
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0;
+  }
+
+  #mobile-menu:not(.hidden) {
+    opacity: 1;
+  }
+</style>
+
+
 </script>
 
 <style>
